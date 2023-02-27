@@ -8,8 +8,8 @@ public class SuburbDTO {
     public SuburbDTO() {
     }
 
-    public SuburbDTO(Long id,String suburbName, String postcode) {
-    	this.id=id;   
+    public SuburbDTO(String suburbName, String postcode) {
+    	  
         this.suburbName = suburbName;
         this.postcode = postcode;
     }

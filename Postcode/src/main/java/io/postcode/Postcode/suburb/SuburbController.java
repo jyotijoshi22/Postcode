@@ -1,8 +1,11 @@
 package io.postcode.Postcode.suburb;
 
 import java.net.URI;
+import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -18,29 +22,31 @@ public class SuburbController {
 
     @Autowired
     private SuburbService suburbService;
+    public SuburbController(SuburbService suburbService) {
+        this.suburbService = suburbService;
+    }
     
+    @GetMapping
+	public ResponseEntity<List<Suburb>> getAll(){
+		
+		List<Suburb> allInfo = this.suburbService.getAll();
+		
+		return new ResponseEntity<>(allInfo, HttpStatus.OK);
+		
+	}
+    
+    @GetMapping("/{id}")
+	public ResponseEntity<Suburb> getById(@PathVariable Long id) {
+		Optional<Suburb> idInfo = this.suburbService.getById(id);
 
-    @GetMapping("/{postcode}")
-    
-       public ResponseEntity<SuburbDTO> getSuburbByPostcode(@PathVariable String postcode) {
-        Suburb suburb = suburbService.getSuburbByPostcode(postcode);
-        if (suburb == null) {
-            return ResponseEntity.notFound().build();
-        }
-        SuburbDTO suburbDTO = new SuburbDTO(suburb.getId(), suburb.getName(), suburb.getPostcode());
-        return ResponseEntity.ok(suburbDTO);
-    }
+		if (idInfo.isEmpty()) {
+			return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+		}
+
+		return new ResponseEntity<>(idInfo.get(), HttpStatus.NOT_FOUND);
+	}
     
     
-    @GetMapping(params = "name")
-    public ResponseEntity<SuburbDTO> getSuburbByName(@RequestParam String name) {
-        Suburb suburb = suburbService.getSuburbByName(name);
-        if (suburb == null) {
-            return ResponseEntity.notFound().build();
-        }
-        SuburbDTO suburbDTO = new SuburbDTO(suburb.getId(), suburb.getName(), suburb.getPostcode());
-        return ResponseEntity.ok(suburbDTO);
-    }
     
     @PostMapping("/createSuburbs")
     public ResponseEntity<SuburbDTO> addSuburb(@RequestBody SuburbDTO suburbDTO) {
@@ -51,14 +57,41 @@ public class SuburbController {
     	
         // Check if the suburb already exists
         if (suburbService.getSuburbByPostcode(suburbDTO.getPostcode()) != null ||
-                suburbService.getSuburbByName(suburbDTO.getSuburbName()) != null) {
+                suburbService.getSuburbByPostcode(suburbDTO.getSuburbName()) != null) {
             return ResponseEntity.badRequest().build();
         }
 
         
         // Add the new suburb
-        Suburb addedSuburb = suburbService.addSuburb(new Suburb(suburbDTO.getId(),suburbDTO.getSuburbName(), suburbDTO.getPostcode()));
+        Suburb addedSuburb = suburbService.addSuburb(new Suburb(suburbDTO.getSuburbName(), suburbDTO.getPostcode()));
         return ResponseEntity.created(URI.create("/createSuburbs/" + addedSuburb.getId())).build();
+    }
+    
+  
+    
+    @RequestMapping(params="postcode")
+    @ResponseBody
+    public ResponseEntity<List<Suburb>>getSuburbByPostcode(@RequestParam String postcode) {
+        List<Suburb> suburbList = this.suburbService.getSuburbByPostcode(postcode);
+        if (suburbList.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(suburbList);
+    }
+    
+    
+    
+    
+    @RequestMapping(params = "suburbName")
+	@ResponseBody
+	public ResponseEntity<List<Suburb>> getPostcodeByName(@RequestParam String suburbName) {
+		
+		List<Suburb> postList = this.suburbService.getPostcodeByName(suburbName);
+
+		if (postList.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(postList);
     }
     
 
