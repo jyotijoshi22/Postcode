@@ -8,7 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="GetSubPos")
+@Table(name="Get_Sub_Pos")
 public class  Suburb {
 	
 	@Id
@@ -17,15 +17,15 @@ public class  Suburb {
     private Long id;
 	
 	
-	@Column(unique = true,name="Suburb")
-	private String suburbName;
+	@Column(name="name")
+	private String name;
 
-    @Column(unique = true,name="Postcode")
+    @Column(name="Postcode")
     private String postcode;
 
 	public Suburb(String name, String postcode) {
 		super();
-		this.suburbName = name;
+		this.name = name;
 		this.postcode = postcode;
 	}
 
@@ -36,11 +36,11 @@ public class  Suburb {
 			}
 //getter and setters
 	public String getName() {
-		return suburbName;
+		return name;
 	}
 
 	public void setName(String name) {
-		this.suburbName = name;
+		this.name = name;
 	}
 
 	

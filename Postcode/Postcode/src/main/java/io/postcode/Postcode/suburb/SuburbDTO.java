@@ -2,15 +2,15 @@ package io.postcode.Postcode.suburb;
 
 public class SuburbDTO {
     private Long id;
-    private String suburbName;
+    private String name;
     private String postcode;
 
     public SuburbDTO() {
     }
 
-    public SuburbDTO(String suburbName, String postcode) {
+    public SuburbDTO(String name, String postcode) {
     	  
-        this.suburbName = suburbName;
+        this.name = name;
         this.postcode = postcode;
     }
 
@@ -21,12 +21,12 @@ public class SuburbDTO {
         this.id = id;
     }
 
-    public String getSuburbName() {
-		return suburbName;
+    public String getName() {
+		return name;
 	}
 
-	public void setSuburbName(String suburbName) {
-		this.suburbName = suburbName;
+	public void setName(String name) {
+		this.name = name;
 	}
    
 
