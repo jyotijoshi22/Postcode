@@ -1,13 +1,10 @@
 package io.postcode.Postcode.suburb;
 
-import java.net.URI;
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,7 +30,6 @@ public class SuburbController {
         List<Suburb> allInfo = this.suburbService.getAll();
         return new ResponseEntity<>(allInfo, HttpStatus.OK);
     }
-
     
     
     @GetMapping("/{id}")
@@ -47,29 +43,17 @@ public class SuburbController {
         return new ResponseEntity<>(idInfo.get(), HttpStatus.NOT_FOUND);
     }
 
-        
-    @PreAuthorize("hasRole('Editor')")
+  
     @PostMapping("/createSuburbs")
-    public ResponseEntity<SuburbDTO> addSuburb(@RequestBody SuburbDTO suburbDTO) {
+	public ResponseEntity<Suburb> createSuburbRecord(@RequestBody SuburbDTO suburbDto) {
+		Suburb newSub = this.suburbService.addSuburb(suburbDto);
 
-        Suburb suburb = new Suburb();
-        suburb.setName(suburbDTO.getName());
-        suburb.setPostcode(suburbDTO.getPostcode());
-
-        // Check if the suburb already exists
-        if (suburbService.getSuburbByPostcode(suburbDTO.getPostcode()) != null ||
-                suburbService.getSuburbByPostcode(suburbDTO.getName()) != null) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        // Add the new suburb
-        Suburb addedSuburb = this.suburbService.addSuburb(new Suburb(suburbDTO.getName(), suburbDTO.getPostcode()));
-        return ResponseEntity.created(URI.create("/createSuburbs/" + addedSuburb.getId())).build();
-    }
-
+		return new ResponseEntity<>(newSub, HttpStatus.CREATED);
+	}
     
+     
     
-    
+       
     @RequestMapping(params="postcode")
     @ResponseBody
     public ResponseEntity<List<Suburb>> getSuburbByPostcode(@RequestParam String postcode) {

@@ -34,9 +34,18 @@ public class SuburbService {
     }
 
 
-    
-    public Suburb addSuburb(Suburb suburb) {
-        return suburbRepository.save(suburb);
-    }
+    public Suburb addSuburb(SuburbDTO suburb2) {
+        
+        // Create new suburb entity
+        Suburb suburb = new Suburb();
+        suburb.setName(suburb2.getName());
+        suburb.setPostcode(suburb2.getPostcode());
 
+        // Save the new suburb
+        return this.suburbRepository.save(suburb);
+    }
+    
+    
+    
+    
 }
