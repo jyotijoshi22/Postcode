@@ -54,3 +54,7 @@ The API for adding new combinations is secured by requiring authentication and a
 # Reusability
 
 This project has been developed with reusability in mind. The code is designed to be modular and follow best practices and industry standards, making it easy to adapt for use in other projects.
+
+## FUTURE GOALS
+
+Testing for controller / service layers
